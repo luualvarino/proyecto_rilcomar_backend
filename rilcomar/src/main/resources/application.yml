@@ -1,0 +1,17 @@
+spring:
+  application:
+    name: rilcomar
+
+  jpa:
+    properties:
+      hibernate:
+        format_sql: true
+        dialect: org.hibernate.dialect.SQLServerDialect
+    hibernate:
+      ddl-auto: update
+
+  datasource:
+    url: jdbc:sqlserver://localhost:1433;encrypt=true;trustServerCertificate=true;databaseName=RILCOMAR
+    username: sqlserver
+    password: admin
+    driver-class-name: com.microsoft.sqlserver.jdbc.SQLServerDriver
