@@ -3,18 +3,19 @@ package com.proyecto.rilcomar.entities;
 import jakarta.persistence.*;
 
 @Entity
-@Table(name = "Usuario", schema = "RILCOMAR")
+@Table(name = "Usuario")
 public class Usuario {
     @Id
-    @Column(name="usuarioUser")
+    @Column(name="username")
     private String username;
 
-    @Column(name="usuarioClave")
+    @Column(name="password")
     private String password;
 
-    @Column(name="usuarioEsAdmin")
+    @Column(name="es_admin")
     private boolean esAdmin;
 
-    @Column(name = "usuarioIDCliente")
+    @ManyToOne
+    @JoinColumn(name="id_cliente", referencedColumnName = "id")
     private Cliente cliente;
 }

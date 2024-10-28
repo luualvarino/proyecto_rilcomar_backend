@@ -11,7 +11,7 @@ spring:
       ddl-auto: update
 
   datasource:
-    url: jdbc:sqlserver://localhost:1433;encrypt=true;trustServerCertificate=true;databaseName=RILCOMAR
-    username: sqlserver
+    url: jdbc:sqlserver://localhost:1433;databaseName=RILCOMAR;trustServerCertificate=true;
+    username: admin
     password: admin
     driver-class-name: com.microsoft.sqlserver.jdbc.SQLServerDriver

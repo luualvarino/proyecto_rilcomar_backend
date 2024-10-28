@@ -5,9 +5,9 @@ import jakarta.persistence.Embeddable;
 
 @Embeddable
 public class PedidoPalletId {
-    @Column(name = "pedidoID")
+    @Column(name = "pedido_id")
     private int pedidoId;
 
-    @Column(name = "palletID")
+    @Column(name = "pallet_id")
     private int palletId;
 }

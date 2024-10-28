@@ -3,7 +3,7 @@ package com.proyecto.rilcomar.entities;
 import jakarta.persistence.*;
 
 @Entity
-@Table(name="Pedido_Pallet", schema ="RILCOMAR")
+@Table(name="Pedido_Pallet")
 public class PedidoPallet {
 
     @EmbeddedId
@@ -11,11 +11,11 @@ public class PedidoPallet {
 
     @ManyToOne
     @MapsId("pedidoId")
-    @JoinColumn(name = "pedidoID")
+    @JoinColumn(name = "pedido_id")
     private Pedido pedido;
 
     @ManyToOne
     @MapsId("palletId")
-    @JoinColumn(name = "palletID")
+    @JoinColumn(name = "pallet_id")
     private Pallet pallet;
 }

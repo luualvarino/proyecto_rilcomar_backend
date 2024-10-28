@@ -5,20 +5,20 @@ import jakarta.persistence.*;
 import java.util.List;
 
 @Entity
-@Table(name="Pallet", schema="RILCOMAR")
+@Table(name="Pallet")
 public class Pallet {
     @Id
-    @GeneratedValue
-    @Column(name="palletID")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name="id")
     private int id;
 
-    @Column(name="palletEstado")
+    @Column(name="estado")
     private String estado;
 
-    @Column(name="palletTipo")
+    @Column(name="tipo")
     private String tipo;
 
-    @Column(name="palletDisponible")
+    @Column(name="esta_disponible")
     private boolean estaDisponible;
 
     @OneToMany(mappedBy = "pallet")

@@ -1,25 +1,21 @@
 package com.proyecto.rilcomar.entities;
 
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
 
 @Entity
-@Table(name="Cliente", schema="RILCOMAR")
-@Getter
-@Setter
+@Table(name="Cliente")
 public class Cliente {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name="clienteID")
+    @GeneratedValue()
+    @Column(name="id")
     private int id;
 
-    @Column(name="clienteNombre")
+    @Column(name="nombre")
     private String nombre;
 
-    @Column(name="clienteTelefono")
+    @Column(name="telefono")
     private String telefono;
 
-    @Column(name="clienteMail")
-    private String email;
+    @Column(name="mail")
+    private String mail;
 }
