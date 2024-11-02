@@ -6,26 +6,27 @@ import java.util.Date;
 import java.util.List;
 
 @Entity
-@Table(name="Pedido", schema="RILCOMAR")
+@Table(name="Pedido")
 public class Pedido {
     @Id
     @GeneratedValue
-    @Column(name="pedidoID")
+    @Column(name="id")
     private int id;
 
-    @Column(name="pedidoEstado")
+    @Column(name="estado")
     private String estado;
 
-    @Column(name="pedidoIDCliente")
+    @ManyToOne
+    @JoinColumn(name="id_cliente", referencedColumnName = "id")
     private Cliente cliente;
 
-    @Column(name="pedidoFechaCreacion")
+    @Column(name="fecha_creacion")
     private Date fechaCreacion;
 
-    @Column(name="pedidoFechaEntrega")
+    @Column(name="fecha_entrega")
     private Date fechaEntrega;
 
-    @Column(name="pedidoActualizacion")
+    @Column(name="ultima_actualizacion")
     private Date ultimaActualizacion;
 
     @OneToMany(mappedBy = "pedido")
