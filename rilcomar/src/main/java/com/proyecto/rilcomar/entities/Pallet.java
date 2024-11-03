@@ -1,11 +1,18 @@
 package com.proyecto.rilcomar.entities;
 
+import com.proyecto.rilcomar.dtos.PalletDto;
 import jakarta.persistence.*;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.util.List;
 
 @Entity
 @Table(name="Pallet")
+@Getter
+@Setter
+@Builder
 public class Pallet {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -23,4 +30,14 @@ public class Pallet {
 
     @OneToMany(mappedBy = "pallet")
     private List<PedidoPallet> historial;
+
+
+    public static Pallet build(PalletDto pallet){
+        return Pallet.builder()
+                .id(pallet.getId())
+                .estado(pallet.getEstado())
+                .tipo(pallet.getTipo())
+                .estaDisponible(pallet.isEstaDisponible())
+                .build();
+    }
 }
