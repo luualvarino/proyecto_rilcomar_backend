@@ -2,9 +2,7 @@ package com.proyecto.rilcomar.entities;
 
 import com.proyecto.rilcomar.dtos.PalletDto;
 import jakarta.persistence.*;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 import java.util.List;
 
@@ -13,6 +11,8 @@ import java.util.List;
 @Getter
 @Setter
 @Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class Pallet {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -40,4 +40,5 @@ public class Pallet {
                 .estaDisponible(pallet.isEstaDisponible())
                 .build();
     }
+
 }
