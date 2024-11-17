@@ -9,6 +9,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
+
 import java.util.List;
 @RestController
 @RequestMapping(value = "/pallets", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -23,14 +24,17 @@ public class PalletController {
         return PalletDto.build(palletService.agregarPallet(Pallet.build(pallet)));
     }
 
-    @GetMapping
-    public List<Pallet> obtenerTodosLosPallets() {
-        return palletService.obtenerTodosLosPallets();
-    }
-
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void eliminarPallet(@PathVariable int id){
         palletService.eliminarPallet(id);
+    }
+
+    @GetMapping
+    public List<PalletDto> obtenerPallets(){
+        return palletService.obtenerPallets()
+                .stream()
+                .map(PalletDto :: build)
+                .toList();
     }
 }

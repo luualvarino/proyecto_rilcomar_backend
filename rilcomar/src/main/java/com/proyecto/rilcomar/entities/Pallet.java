@@ -10,6 +10,8 @@ import java.util.List;
 @Table(name="Pallet")
 @Getter
 @Setter
+@NoArgsConstructor
+@AllArgsConstructor
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor

@@ -28,8 +28,6 @@ public class PalletService {
         }
     }
 
-    public List<Pallet> obtenerTodosLosPallets() {
-        return palletRepository.findAll();
-    }
+    public List<Pallet> obtenerPallets() { return palletRepository.findAll(); }
 
 }
