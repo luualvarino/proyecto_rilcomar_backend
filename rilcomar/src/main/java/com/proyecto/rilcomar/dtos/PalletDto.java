@@ -1,13 +1,13 @@
 package com.proyecto.rilcomar.dtos;
 
 import com.proyecto.rilcomar.entities.Pallet;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 @Builder
 @Getter
 @Setter
+@NoArgsConstructor
+@AllArgsConstructor
 public class PalletDto {
     private int id;
     private String estado;
