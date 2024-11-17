@@ -13,6 +13,8 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class Pallet {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -40,4 +42,5 @@ public class Pallet {
                 .estaDisponible(pallet.isEstaDisponible())
                 .build();
     }
+
 }
