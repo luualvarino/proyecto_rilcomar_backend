@@ -22,9 +22,6 @@ public class UsuarioService {
         }
     }
 
-    public boolean esAdmin(Usuario usuario) {
-        return usuario.isEsAdmin();
-    }
 
     public Usuario agregarUsuario(Usuario usuario) {
         try{
@@ -36,7 +33,7 @@ public class UsuarioService {
         }
     }
 
-    public List<Usuario> obtenerUsuario() {
+    public List<Usuario> obtenerUsuarios() {
         return usuarioRepository.findAll();
     }
 
