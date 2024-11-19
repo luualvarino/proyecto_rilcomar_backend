@@ -26,8 +26,8 @@ public class UsuarioController{
         return UsuarioDto.build(usuarioService.autenticarUsuario(Usuario.build(usuarioDto)));
     }
     @GetMapping
-    public List<UsuarioDto> obtenerUsuario() {
-        return usuarioService.obtenerUsuario()
+    public List<UsuarioDto> obtenerUsuarios() {
+        return usuarioService.obtenerUsuarios()
                 .stream()
                 .map(UsuarioDto :: build)
                 .toList();
@@ -35,7 +35,7 @@ public class UsuarioController{
 
     @DeleteMapping("/{username}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void eliminarPallet(@PathVariable String username){
+    public void eliminarUsuario(@PathVariable String username){
         usuarioService.eliminarUsuario(username);
     }
 }
