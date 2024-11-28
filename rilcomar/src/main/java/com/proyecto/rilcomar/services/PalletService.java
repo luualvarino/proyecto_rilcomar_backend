@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class PalletService {
@@ -29,5 +30,9 @@ public class PalletService {
     }
 
     public List<Pallet> obtenerPallets() { return palletRepository.findAll(); }
+
+    public Optional<Pallet> obtenerPallet(int id) { return palletRepository.findById(id); }
+
+
 
 }
