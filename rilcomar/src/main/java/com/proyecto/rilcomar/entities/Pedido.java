@@ -1,12 +1,16 @@
 package com.proyecto.rilcomar.entities;
 
 import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.util.Date;
 import java.util.List;
 
 @Entity
 @Table(name="Pedido")
+@Getter
+@Setter
 public class Pedido {
     @Id
     @GeneratedValue
