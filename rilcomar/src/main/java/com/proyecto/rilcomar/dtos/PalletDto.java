@@ -13,6 +13,10 @@ public class PalletDto {
     private String estado;
     private String tipo;
     private boolean estaDisponible;
+    private String formato;
+    private double peso;
+    private String dimensiones;
+    private String observaciones;
 
     public static PalletDto build(Pallet pallet){
         return PalletDto.builder()
