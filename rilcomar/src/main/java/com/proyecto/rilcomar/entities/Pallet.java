@@ -33,13 +33,13 @@ public class Pallet {
     private String formato; //EuroPallet, Mercosur, quizas deba ser un enum.
 
     @Column(name="peso", nullable = true)
-    private Double peso = 0.0; // opcional.
+    private Double peso ; // opcional.
 
     @Column(name="dimensiones", nullable = true)
-    private String dimensiones = ""; // Ejemplo: "120x80x15 cm", opcional.
+    private String dimensiones ; // Ejemplo: "120x80x15 cm", opcional.
 
     @Column(name="observaciones", nullable = true)
-    private String observaciones = ""; // Comentarios adicionales, estado fisico del pallet, opcional.
+    private String observaciones ; // Comentarios adicionales, estado fisico del pallet, opcional.
 
     @OneToMany(mappedBy = "pallet")
     private List<PedidoPallet> historial;
