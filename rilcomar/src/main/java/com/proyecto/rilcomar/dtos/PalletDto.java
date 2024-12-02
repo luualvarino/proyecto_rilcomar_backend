@@ -17,6 +17,7 @@ public class PalletDto {
     private double peso;
     private String dimensiones;
     private String observaciones;
+    private String ubicacion;
 
     public static PalletDto build(Pallet pallet){
         return PalletDto.builder()
@@ -24,6 +25,7 @@ public class PalletDto {
                 .estado(pallet.getEstado())
                 .tipo(pallet.getTipo())
                 .estaDisponible(pallet.isEstaDisponible())
+                .ubicacion(pallet.getUbicacion())
                 .build();
     }
 }
