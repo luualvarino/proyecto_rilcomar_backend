@@ -1,7 +1,6 @@
 package com.proyecto.rilcomar.entities;
 
 import com.proyecto.rilcomar.dtos.PalletDto;
-import com.proyecto.rilcomar.enums.MaterialEnum;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -17,24 +16,26 @@ import java.util.List;
 public class Pallet {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name="id", nullable = false)
+    @Column(name="id")
     private int id;
 
     @Column(name="estado", nullable = false)
     private String estado; // quizas deba ser un enum.
 
-    @Enumerated(EnumType.STRING)
     @Column(name="tipo", nullable = false)
-    private MaterialEnum tipo;
+    private String tipo;
 
     @Column(name="esta_disponible", nullable = false)
     private boolean estaDisponible;
 
-    @Column(name="formato", nullable = false)
-    private String formato;
+    @Column(name="formato")
+    private String formato; //EuroPallet, Mercosur, quizas deba ser un enum.
 
     @Column(name="peso")
-    private Double peso ;
+    private Double peso ; // opcional.
+
+    @Column(name="dimensiones")
+    private String dimensiones ; // Ejemplo: "120x80x15 cm", opcional.
 
     @Column(name="observaciones")
     private String observaciones ; // Comentarios adicionales, estado fisico del pallet, opcional.
@@ -50,11 +51,12 @@ public class Pallet {
         return Pallet.builder()
                 .id(pallet.getId())
                 .estado(pallet.getEstado())
-                .tipo(MaterialEnum.valueOf(pallet.getTipo()))
+                .tipo(pallet.getTipo())
                 .estaDisponible(pallet.isEstaDisponible())
-                .formato(pallet.getFormato())
-                .peso(pallet.getPeso())
-                .observaciones(pallet.getObservaciones())
+                .formato(pallet.getFormato()) //Nuevo campo.
+                .peso(pallet.getPeso()) // Nuevo campo.
+                .dimensiones(pallet.getDimensiones()) // Nuevo campo.
+                .observaciones(pallet.getObservaciones()) // Nuevo campo.
                 .ubicacion(pallet.getUbicacion())
                 .build();
     }

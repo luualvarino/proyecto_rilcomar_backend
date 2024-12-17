@@ -15,7 +15,6 @@ public class PalletService {
     PalletRepository palletRepository;
 
     public Pallet agregarPallet(Pallet pallet){
-        pallet.setEstaDisponible(true);
         return palletRepository.save(pallet);
     }
 
