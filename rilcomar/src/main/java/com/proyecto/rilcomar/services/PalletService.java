@@ -39,6 +39,10 @@ public class PalletService {
         }
     }
 
+    public List<Pallet> obtenerPalletsPorPedido(int pedidoId) {
+        return palletRepository.findAllByPedido(pedidoId);
+    }
+
     public Optional<Pallet> obtenerPallet(int id) { return palletRepository.findById(id); }
 
     public Pallet agregarPallet(Pallet pallet){

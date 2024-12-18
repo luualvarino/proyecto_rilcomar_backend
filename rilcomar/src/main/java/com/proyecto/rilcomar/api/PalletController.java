@@ -41,6 +41,14 @@ public class PalletController {
         }
     }
 
+    @GetMapping("/pedido/{pedidoId}")
+    public List<PalletDto> obtenerPalletsPorPedido(@PathVariable int pedidoId) {
+        return palletService.obtenerPalletsPorPedido(pedidoId)
+                .stream()
+                .map(PalletMapper :: buildDto)
+                .toList();
+    }
+
     @GetMapping("/{id}")
     public ResponseEntity<PalletDto> obtenerPallet(@PathVariable int id) {
         return palletService.obtenerPallet(id)
