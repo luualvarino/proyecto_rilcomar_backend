@@ -2,9 +2,8 @@ package com.proyecto.rilcomar.api;
 
 
 import com.proyecto.rilcomar.dtos.PalletDto;
-import com.proyecto.rilcomar.entities.Pallet;
+import com.proyecto.rilcomar.mappers.PalletMapper;
 import com.proyecto.rilcomar.services.PalletService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -17,33 +16,46 @@ import java.util.List;
 @RequestMapping(value = "/pallets", produces = MediaType.APPLICATION_JSON_VALUE)
 public class PalletController {
 
-    @Autowired
-    PalletService palletService;
+    private final PalletService palletService;
 
-
-    @PostMapping
-    public PalletDto agregarPallet(@RequestBody PalletDto pallet){
-        return PalletDto.build(palletService.agregarPallet(Pallet.build(pallet)));
-    }
-
-    @DeleteMapping("/{id}")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void eliminarPallet(@PathVariable int id){
-        palletService.eliminarPallet(id);
+    public PalletController(PalletService palletService) {
+        this.palletService = palletService;
     }
 
     @GetMapping
-    public List<PalletDto> obtenerPallets(){
-        return palletService.obtenerPallets()
-                .stream()
-                .map(PalletDto :: build)
-                .toList();
+    public List<PalletDto> obtenerPallets(
+            @RequestParam("estado") String estado,
+            @RequestParam("tipo") String tipo,
+            @RequestParam("formato") String formato
+    ) {
+        if (estado.isEmpty() && tipo.isEmpty() && formato.isEmpty()) {
+            return palletService.obtenerPallets()
+                    .stream()
+                    .map(PalletMapper::buildDto)
+                    .toList();
+        } else {
+            return palletService.obtenerPalletsFiltrados(estado, tipo, formato)
+                    .stream()
+                    .map(PalletMapper::buildDto)
+                    .toList();
+        }
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<PalletDto> obtenerPallet(@PathVariable int id) {
         return palletService.obtenerPallet(id)
-                .map(pallet -> ResponseEntity.ok(PalletDto.build(pallet)))
+                .map(pallet -> ResponseEntity.ok(PalletMapper.buildDto(pallet)))
                 .orElse(ResponseEntity.notFound().build());
+    }
+
+    @PostMapping
+    public PalletDto agregarPallet(@RequestBody PalletDto pallet) {
+        return PalletMapper.buildDto(palletService.agregarPallet(PalletMapper.buildEntity(pallet)));
+    }
+
+    @DeleteMapping("/{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void eliminarPallet(@PathVariable int id) {
+        palletService.eliminarPallet(id);
     }
 }

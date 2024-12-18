@@ -1,6 +1,7 @@
 package com.proyecto.rilcomar.entities;
 
-import com.proyecto.rilcomar.dtos.PalletDto;
+import com.proyecto.rilcomar.enums.EstadoEnum;
+import com.proyecto.rilcomar.enums.MaterialEnum;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -16,26 +17,22 @@ import java.util.List;
 public class Pallet {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name="id")
+    @Column(name="id", nullable = false)
     private int id;
 
+    @Enumerated(EnumType.STRING)
     @Column(name="estado", nullable = false)
-    private String estado; // quizas deba ser un enum.
+    private EstadoEnum estado;
 
+    @Enumerated(EnumType.STRING)
     @Column(name="tipo", nullable = false)
-    private String tipo;
+    private MaterialEnum tipo;
 
-    @Column(name="esta_disponible", nullable = false)
-    private boolean estaDisponible;
-
-    @Column(name="formato")
-    private String formato; //EuroPallet, Mercosur, quizas deba ser un enum.
+    @Column(name="formato", nullable = false)
+    private String formato;
 
     @Column(name="peso")
-    private Double peso ; // opcional.
-
-    @Column(name="dimensiones")
-    private String dimensiones ; // Ejemplo: "120x80x15 cm", opcional.
+    private Double peso ;
 
     @Column(name="observaciones")
     private String observaciones ; // Comentarios adicionales, estado fisico del pallet, opcional.
@@ -45,20 +42,4 @@ public class Pallet {
 
     @OneToMany(mappedBy = "pallet")
     private List<PedidoPallet> historial;
-
-
-    public static Pallet build(PalletDto pallet){
-        return Pallet.builder()
-                .id(pallet.getId())
-                .estado(pallet.getEstado())
-                .tipo(pallet.getTipo())
-                .estaDisponible(pallet.isEstaDisponible())
-                .formato(pallet.getFormato()) //Nuevo campo.
-                .peso(pallet.getPeso()) // Nuevo campo.
-                .dimensiones(pallet.getDimensiones()) // Nuevo campo.
-                .observaciones(pallet.getObservaciones()) // Nuevo campo.
-                .ubicacion(pallet.getUbicacion())
-                .build();
-    }
-
 }

@@ -1,6 +1,7 @@
 package com.proyecto.rilcomar.entities;
 
 import jakarta.persistence.*;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -11,6 +12,7 @@ import java.util.List;
 @Table(name="Pedido")
 @Getter
 @Setter
+@Builder
 public class Pedido {
     @Id
     @GeneratedValue

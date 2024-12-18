@@ -1,6 +1,5 @@
 package com.proyecto.rilcomar.dtos;
 
-import com.proyecto.rilcomar.entities.Pedido;
 import lombok.*;
 
 import java.util.Date;
@@ -20,22 +19,4 @@ public class PedidoDto {
     private Date ultimaActualizacion;
     private String ubicacion;
     private List<PalletDto> pallets;
-
-    public static PedidoDto build(Pedido pedido) {
-        return PedidoDto.builder()
-                .id(pedido.getId())
-                .estado(pedido.getEstado())
-                .cliente(ClienteDto.build(pedido.getCliente()))
-                .fechaCreacion(pedido.getFechaCreacion())
-                .fechaEntrega(pedido.getFechaEntrega())
-                .ultimaActualizacion(pedido.getUltimaActualizacion())
-                .ubicacion(pedido.getUbicacion())
-                .pallets(
-                        pedido.getPallets()
-                                .stream()
-                                .map(pedidoPallet -> PalletDto.build(pedidoPallet.getPallet()))
-                                .toList()
-                )
-                .build();
-    }
 }
