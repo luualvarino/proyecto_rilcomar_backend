@@ -1,5 +1,6 @@
 package com.proyecto.rilcomar.entities;
 
+import com.proyecto.rilcomar.enums.EstadoEnum;
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
@@ -20,7 +21,7 @@ public class Pedido {
     private int id;
 
     @Column(name="estado", nullable = false)
-    private String estado;
+    private EstadoEnum estado;
 
     @ManyToOne
     @JoinColumn(name="id_cliente", referencedColumnName = "id")

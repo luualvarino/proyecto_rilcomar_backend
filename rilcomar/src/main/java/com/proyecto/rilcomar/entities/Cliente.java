@@ -1,13 +1,13 @@
 package com.proyecto.rilcomar.entities;
 
 import jakarta.persistence.*;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 @Entity
 @Getter
 @Setter
+@NoArgsConstructor
+@AllArgsConstructor
 @Table(name="Cliente")
 @Builder
 public class Cliente {
