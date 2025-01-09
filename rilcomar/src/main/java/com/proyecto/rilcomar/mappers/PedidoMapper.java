@@ -1,11 +1,12 @@
 package com.proyecto.rilcomar.mappers;
 
 import com.proyecto.rilcomar.dtos.PedidoDto;
+import com.proyecto.rilcomar.dtos.PedidoSimpleDto;
 import com.proyecto.rilcomar.entities.Pedido;
-import com.proyecto.rilcomar.enums.EstadoEnum;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 
 public class PedidoMapper {
@@ -23,21 +24,39 @@ public class PedidoMapper {
                 .pallets(
                         pedido.getPallets()
                                 .stream()
-                                .map(pedidoPallet -> PalletMapper.buildDto(pedidoPallet.getPallet()))
+                                .map(pedidoPallet -> PalletMapper.buildSimpleDto(pedidoPallet.getPallet()))
                                 .toList()
                 )
+                .build();
+    }
+
+    public static PedidoSimpleDto buildSimpleDto(Pedido pedido) {
+        return PedidoSimpleDto.builder()
+                .id(pedido.getId())
+                .estado(pedido.getEstado().name())
+                .cliente(ClienteMapper.buildDto(pedido.getCliente()))
+                .fechaCreacion(formatDate(pedido.getFechaCreacion()))
+                .fechaEntrega(formatDate(pedido.getFechaEntrega()))
+                .ultimaActualizacion(formatDate(pedido.getUltimaActualizacion()))
+                .ubicacion(pedido.getUbicacion())
                 .build();
     }
 
     public static Pedido buildEntity(PedidoDto pedido){
         return Pedido.builder()
                 .id(pedido.getId())
-                .estado(EstadoEnum.valueOf(pedido.getEstado()))
                 .cliente(ClienteMapper.buildEntity(pedido.getCliente()))
                 .fechaCreacion(parseDate(pedido.getFechaCreacion()))
                 .fechaEntrega(parseDate(pedido.getFechaEntrega()))
                 .ultimaActualizacion(parseDate(pedido.getUltimaActualizacion()))
                 .ubicacion(pedido.getUbicacion())
+                .pallets(new ArrayList<>())
+                .palletsAux(
+                        pedido.getPallets()
+                                .stream()
+                                .map(PalletMapper::buildEntity)
+                                .toList()
+                )
                 .build();
     }
 

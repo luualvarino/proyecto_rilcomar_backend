@@ -21,8 +21,8 @@ public class PedidoController {
     }
 
     @GetMapping
-    public List<PedidoDto> obtenerPedidos(){
-        return pedidoService.obtenerPedidos()
+    public List<PedidoDto> obtenerPedidos(@RequestParam(required = false) String estado){
+        return pedidoService.obtenerPedidos(estado)
                 .stream()
                 .map(PedidoMapper :: buildDto)
                 .toList();

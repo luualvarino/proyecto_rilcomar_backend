@@ -2,14 +2,12 @@ package com.proyecto.rilcomar.dtos;
 
 import lombok.*;
 
-import java.util.List;
-
 @Builder
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class PalletDto {
+public class PalletSimpleDto {
     private int id;
     private String estado;
     private String tipo;
@@ -17,5 +15,4 @@ public class PalletDto {
     private double peso;
     private String observaciones;
     private String ubicacion;
-    private List<PedidoSimpleDto> historial;
 }
