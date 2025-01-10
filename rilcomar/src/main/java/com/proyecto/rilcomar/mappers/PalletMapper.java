@@ -20,11 +20,11 @@ public class PalletMapper {
                 .peso(pallet.getPeso())
                 .observaciones(pallet.getObservaciones())
                 .ubicacion(pallet.getUbicacion())
-                .historial(Optional.of(pallet.getHistorial()
+                .historial(Optional.ofNullable(pallet.getHistorial())
+                        .orElse(new ArrayList<>())
                         .stream()
                         .map(pedidoPallet -> PedidoMapper.buildSimpleDto(pedidoPallet.getPedido()))
-                        .toList()).orElse(new ArrayList<>())
-                )
+                        .toList())
                 .build();
     }
 
@@ -43,7 +43,7 @@ public class PalletMapper {
     public static Pallet buildEntity(PalletDto pallet) {
         return Pallet.builder()
                 .id(pallet.getId())
-                .estado(EstadoPalletEnum.valueOf(pallet.getEstado()))
+                //.estado(EstadoPalletEnum.valueOf(pallet.getEstado()))
                 .tipo(MaterialEnum.valueOf(pallet.getTipo()))
                 .formato(pallet.getFormato())
                 .peso(pallet.getPeso())
