@@ -5,6 +5,8 @@ import com.proyecto.rilcomar.entities.Pedido;
 import com.proyecto.rilcomar.entities.PedidoPallet;
 import com.proyecto.rilcomar.entities.PedidoPalletId;
 import com.proyecto.rilcomar.enums.EstadoEnum;
+import com.proyecto.rilcomar.enums.EstadoPalletEnum;
+import com.proyecto.rilcomar.exceptions.NotFoundException;
 import com.proyecto.rilcomar.repos.PalletRepository;
 import com.proyecto.rilcomar.repos.PedidoRepository;
 import jakarta.persistence.EntityNotFoundException;
@@ -12,7 +14,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.Date;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class PedidoService {
@@ -24,17 +25,19 @@ public class PedidoService {
         this.palletRepository = palletRepository;
     }
 
-    public Pedido agregarPedido(Pedido pedido){
+    public Pedido agregarPedido(Pedido pedido) {
         pedido.setFechaCreacion(new Date());
         pedido.setUltimaActualizacion(new Date());
         pedido.setEstado(EstadoEnum.Creado);
         pedido.setUbicacion("Deposito");
-        for(Pallet pallet: pedido.getPalletsAux()){
+        for (Pallet pallet : pedido.getPalletsAux()) {
             Pallet palletExist = palletRepository.findById(pallet.getId()).orElse(null);
             assert palletExist != null;
+            palletExist.setEstado(EstadoPalletEnum.Ocupado);
             PedidoPalletId pedidoPalletId = new PedidoPalletId(pedido.getId(), palletExist.getId());
             PedidoPallet pedidoPallet = new PedidoPallet(pedidoPalletId, pedido, palletExist);
             pedido.getPallets().add(pedidoPallet);
+            palletRepository.save(palletExist);
         }
         return pedidoRepository.save(pedido);
     }
@@ -55,5 +58,8 @@ public class PedidoService {
         return pedidoRepository.findAllByEstado(estadoEnum);
     }
 
-    public Optional<Pedido> obtenerPedido(int id) { return pedidoRepository.findById(id); }
+    public Pedido obtenerPedido(int id) {
+        return pedidoRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException("No se encontro un Pedido con el id " + id));
+    }
 }

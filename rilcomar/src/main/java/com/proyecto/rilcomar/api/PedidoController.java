@@ -30,9 +30,7 @@ public class PedidoController {
 
     @GetMapping("/{id}")
     public ResponseEntity<PedidoDto> obtenerPedido(@PathVariable int id) {
-        return pedidoService.obtenerPedido(id)
-                .map(pedido -> ResponseEntity.ok(PedidoMapper.buildDto(pedido)))
-                .orElse(ResponseEntity.notFound().build());
+        return ResponseEntity.ok(PedidoMapper.buildDto(pedidoService.obtenerPedido(id)));
     }
 
     @PostMapping
