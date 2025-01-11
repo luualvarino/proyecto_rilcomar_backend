@@ -1,6 +1,6 @@
 package com.proyecto.rilcomar.entities;
 
-import com.proyecto.rilcomar.enums.EstadoEnum;
+import com.proyecto.rilcomar.enums.EstadoPalletEnum;
 import com.proyecto.rilcomar.enums.MaterialEnum;
 import jakarta.persistence.*;
 import lombok.*;
@@ -22,7 +22,7 @@ public class Pallet {
 
     @Enumerated(EnumType.STRING)
     @Column(name="estado", nullable = false)
-    private EstadoEnum estado;
+    private EstadoPalletEnum estado;
 
     @Enumerated(EnumType.STRING)
     @Column(name="tipo", nullable = false)
@@ -40,6 +40,6 @@ public class Pallet {
     @Column(name="ubicacion")
     private String ubicacion;
 
-    @OneToMany(mappedBy = "pallet")
+    @OneToMany(mappedBy = "pallet", cascade = CascadeType.ALL)
     private List<PedidoPallet> historial;
 }

@@ -1,7 +1,7 @@
 package com.proyecto.rilcomar.enums;
 
 public enum EstadoEnum {
-    Libre,
+    Creado,
     Procesando,
     En_Viaje,
     Entregado,

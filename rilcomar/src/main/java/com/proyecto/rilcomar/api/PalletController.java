@@ -24,21 +24,14 @@ public class PalletController {
 
     @GetMapping
     public List<PalletDto> obtenerPallets(
-            @RequestParam("estado") String estado,
-            @RequestParam("tipo") String tipo,
-            @RequestParam("formato") String formato
+            @RequestParam(required = false) String estado,
+            @RequestParam(required = false) String tipo,
+            @RequestParam(required = false) String formato
     ) {
-        if (estado.isEmpty() && tipo.isEmpty() && formato.isEmpty()) {
-            return palletService.obtenerPallets()
-                    .stream()
-                    .map(PalletMapper::buildDto)
-                    .toList();
-        } else {
-            return palletService.obtenerPalletsFiltrados(estado, tipo, formato)
-                    .stream()
-                    .map(PalletMapper::buildDto)
-                    .toList();
-        }
+        return palletService.obtenerPallets(estado, tipo, formato)
+                .stream()
+                .map(PalletMapper::buildDto)
+                .toList();
     }
 
     @GetMapping("/pedido/{pedidoId}")

@@ -2,14 +2,12 @@ package com.proyecto.rilcomar.dtos;
 
 import lombok.*;
 
-import java.util.List;
-
 @Builder
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class PedidoDto {
+public class PedidoSimpleDto {
     private int id;
     private String estado;
     private ClienteDto cliente;
@@ -17,5 +15,4 @@ public class PedidoDto {
     private String fechaEntrega;
     private String ultimaActualizacion;
     private String ubicacion;
-    private List<PalletSimpleDto> pallets;
 }
