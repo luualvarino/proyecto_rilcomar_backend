@@ -3,6 +3,8 @@ package com.proyecto.rilcomar.entities;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.List;
+
 @Entity
 @Getter
 @Setter
@@ -24,4 +26,7 @@ public class Cliente {
 
     @Column(name="mail")
     private String mail;
+
+    @OneToMany(mappedBy = "cliente", cascade = CascadeType.ALL)
+    private List<Pedido> pedidos;
 }
