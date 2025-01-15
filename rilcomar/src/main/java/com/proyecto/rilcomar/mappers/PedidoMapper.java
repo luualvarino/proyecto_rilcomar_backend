@@ -47,7 +47,7 @@ public class PedidoMapper {
         return Pedido.builder()
                 .id(pedido.getId())
                 .cliente(ClienteMapper.buildEntity(pedido.getCliente()))
-                .estado(EstadoEnum.valueOf(pedido.getEstado()))
+                .estado(pedido.getEstado() != null ? EstadoEnum.valueOf(pedido.getEstado()) : null)
                 .fechaCreacion(parseDate(pedido.getFechaCreacion()))
                 .fechaEntrega(parseDate(pedido.getFechaEntrega()))
                 .ultimaActualizacion(parseDate(pedido.getUltimaActualizacion()))
@@ -59,6 +59,19 @@ public class PedidoMapper {
                                 .map(PalletMapper::buildEntity)
                                 .toList()
                 )
+                .build();
+    }
+
+    public static Pedido buildEntity(PedidoSimpleDto pedido){
+        return Pedido.builder()
+                .id(pedido.getId())
+                .cliente(ClienteMapper.buildEntity(pedido.getCliente()))
+                .estado(pedido.getEstado() != null ? EstadoEnum.valueOf(pedido.getEstado()) : null)
+                .fechaCreacion(parseDate(pedido.getFechaCreacion()))
+                .fechaEntrega(parseDate(pedido.getFechaEntrega()))
+                .ultimaActualizacion(parseDate(pedido.getUltimaActualizacion()))
+                .ubicacion(pedido.getUbicacion())
+                .pallets(new ArrayList<>())
                 .build();
     }
 

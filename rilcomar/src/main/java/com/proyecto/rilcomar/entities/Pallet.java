@@ -40,6 +40,10 @@ public class Pallet {
     @Column(name="ubicacion")
     private String ubicacion;
 
+    @ManyToOne
+    @JoinColumn(name="pedido_actual", referencedColumnName = "id")
+    private Pedido pedidoActual;
+
     @OneToMany(mappedBy = "pallet", cascade = CascadeType.ALL)
     private List<PedidoPallet> historial;
 }

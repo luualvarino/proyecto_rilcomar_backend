@@ -17,5 +17,6 @@ public class PalletDto {
     private double peso;
     private String observaciones;
     private String ubicacion;
+    private PedidoSimpleDto pedidoActual;
     private List<PedidoSimpleDto> historial;
 }

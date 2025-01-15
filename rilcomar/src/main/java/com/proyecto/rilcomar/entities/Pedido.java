@@ -2,6 +2,7 @@ package com.proyecto.rilcomar.entities;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.proyecto.rilcomar.enums.EstadoEnum;
+import com.proyecto.rilcomar.enums.EstadoPalletEnum;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -52,4 +53,26 @@ public class Pedido {
 
     @Transient
     private List<Pallet> palletsAux;
+
+    @PrePersist
+    public void asignarEstadoCreado() {
+        if (estado == null) {
+            estado = EstadoEnum.Creado;
+            fechaCreacion = new Date();
+            ubicacion = "Deposito";
+        }
+        setUltimaActualizacion(new Date());
+    }
+
+    @PreRemove
+    public void liberarPallets() {
+        if (this.estado != EstadoEnum.Completado) {
+            for (PedidoPallet pedidoPallet : pallets) {
+                Pallet pallet = pedidoPallet.getPallet();
+                if (pallet != null) {
+                    pallet.setEstado(EstadoPalletEnum.Libre);
+                }
+            }
+        }
+    }
 }

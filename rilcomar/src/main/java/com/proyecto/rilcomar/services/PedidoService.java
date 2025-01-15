@@ -12,7 +12,6 @@ import com.proyecto.rilcomar.repos.PedidoRepository;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.stereotype.Service;
 
-import java.util.Date;
 import java.util.List;
 
 @Service
@@ -36,14 +35,11 @@ public class PedidoService {
     }
 
     public Pedido agregarPedido(Pedido pedido) {
-        pedido.setFechaCreacion(new Date());
-        pedido.setUltimaActualizacion(new Date());
-        pedido.setEstado(EstadoEnum.Creado);
-        pedido.setUbicacion("Deposito");
         for (Pallet pallet : pedido.getPalletsAux()) {
             Pallet palletExist = palletRepository.findById(pallet.getId()).orElse(null);
             assert palletExist != null;
             palletExist.setEstado(EstadoPalletEnum.Ocupado);
+            palletExist.setPedidoActual(pedido);
             PedidoPalletId pedidoPalletId = new PedidoPalletId(pedido.getId(), palletExist.getId());
             PedidoPallet pedidoPallet = new PedidoPallet(pedidoPalletId, pedido, palletExist);
             pedido.getPallets().add(pedidoPallet);
@@ -54,7 +50,6 @@ public class PedidoService {
 
     public Pedido editarPedido(Pedido pedido){
         if(pedidoRepository.existsById(pedido.getId())){
-            pedido.setUltimaActualizacion(new Date());
             return pedidoRepository.save(pedido);
         }else{
             throw new EntityNotFoundException("Pedido " + pedido.getId() + " no encontrado");
