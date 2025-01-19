@@ -25,6 +25,16 @@ public class PedidoService {
         this.palletRepository = palletRepository;
     }
 
+    public List<Pedido> obtenerPedidos(String estado) {
+        EstadoEnum estadoEnum = estado != null ? EstadoEnum.valueOf(estado) : null;
+        return pedidoRepository.findAllByEstado(estadoEnum);
+    }
+
+    public Pedido obtenerPedido(int id) {
+        return pedidoRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException("No se encontro un Pedido con el id " + id));
+    }
+
     public Pedido agregarPedido(Pedido pedido) {
         pedido.setFechaCreacion(new Date());
         pedido.setUltimaActualizacion(new Date());
@@ -42,6 +52,15 @@ public class PedidoService {
         return pedidoRepository.save(pedido);
     }
 
+    public Pedido editarPedido(Pedido pedido){
+        if(pedidoRepository.existsById(pedido.getId())){
+            pedido.setUltimaActualizacion(new Date());
+            return pedidoRepository.save(pedido);
+        }else{
+            throw new EntityNotFoundException("Pedido " + pedido.getId() + " no encontrado");
+        }
+    }
+
     public void eliminarPedido(int id) {
         try {
             if (pedidoRepository.existsById(id))
@@ -51,15 +70,5 @@ public class PedidoService {
         } catch (Exception e) {
             throw new RuntimeException("Error inesperado al eliminar el pedido", e);
         }
-    }
-
-    public List<Pedido> obtenerPedidos(String estado) {
-        EstadoEnum estadoEnum = estado != null ? EstadoEnum.valueOf(estado) : null;
-        return pedidoRepository.findAllByEstado(estadoEnum);
-    }
-
-    public Pedido obtenerPedido(int id) {
-        return pedidoRepository.findById(id)
-                .orElseThrow(() -> new NotFoundException("No se encontro un Pedido con el id " + id));
     }
 }

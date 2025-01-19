@@ -38,6 +38,11 @@ public class PedidoController {
         return PedidoMapper.buildDto(pedidoService.agregarPedido(PedidoMapper.buildEntity(pedido)));
     }
 
+    @PutMapping
+    public PedidoDto editarPedido(@RequestBody PedidoDto pedido){
+        return PedidoMapper.buildDto(pedidoService.editarPedido(PedidoMapper.buildEntity(pedido)));
+    }
+
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void eliminarPedido(@PathVariable int id){
