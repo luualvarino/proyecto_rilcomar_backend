@@ -54,6 +54,9 @@ public class PedidoService {
 
     public Pedido editarPedido(Pedido pedido){
         if(pedidoRepository.existsById(pedido.getId())){
+            if (pedido.getEstado() == null) {
+                throw new IllegalArgumentException("El estado no puede ser null");
+            }
             pedido.setUltimaActualizacion(new Date());
             return pedidoRepository.save(pedido);
         }else{
@@ -72,7 +75,12 @@ public class PedidoService {
         }
     }
 
-    public List<Pedido> obtenerPedidosXCliente(int clienteId) {
-        return pedidoRepository.findAllByCliente(clienteId);
+    public List<Pedido> obtenerPedidosXCliente(int clienteId, String estado) {
+        if ((estado == null || estado.isEmpty()))
+            return pedidoRepository.findAllByCliente(clienteId);
+        else {
+            EstadoEnum estadoEnum = EstadoEnum.valueOf(estado);
+            return pedidoRepository.findAllByClienteEstado(clienteId, estadoEnum);
+        }
     }
 }
