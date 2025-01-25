@@ -23,7 +23,7 @@ public class Pedido {
 
     @Enumerated(EnumType.STRING)
     @Column(name="estado", nullable = false)
-    private EstadoEnum estado;
+    private EstadoEnum estado = EstadoEnum.Creado;
 
     @ManyToOne
     @JoinColumn(name="id_cliente", referencedColumnName = "id")

@@ -71,4 +71,8 @@ public class PedidoService {
             throw new RuntimeException("Error inesperado al eliminar el pedido", e);
         }
     }
+
+    public List<Pedido> obtenerPedidosXCliente(int clienteId) {
+        return pedidoRepository.findAllByCliente(clienteId);
+    }
 }

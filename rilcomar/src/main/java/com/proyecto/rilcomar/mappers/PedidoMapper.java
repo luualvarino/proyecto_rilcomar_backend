@@ -3,7 +3,6 @@ package com.proyecto.rilcomar.mappers;
 import com.proyecto.rilcomar.dtos.PedidoDto;
 import com.proyecto.rilcomar.dtos.PedidoSimpleDto;
 import com.proyecto.rilcomar.entities.Pedido;
-import com.proyecto.rilcomar.enums.EstadoEnum;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -47,7 +46,7 @@ public class PedidoMapper {
         return Pedido.builder()
                 .id(pedido.getId())
                 .cliente(ClienteMapper.buildEntity(pedido.getCliente()))
-                .estado(EstadoEnum.valueOf(pedido.getEstado()))
+                //.estado(EstadoEnum.valueOf(pedido.getEstado()))
                 .fechaCreacion(parseDate(pedido.getFechaCreacion()))
                 .fechaEntrega(parseDate(pedido.getFechaEntrega()))
                 .ultimaActualizacion(parseDate(pedido.getUltimaActualizacion()))
