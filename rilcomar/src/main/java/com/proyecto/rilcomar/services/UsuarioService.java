@@ -2,6 +2,7 @@ package com.proyecto.rilcomar.services;
 import java.util.List;
 import com.proyecto.rilcomar.entities.Usuario;
 import com.proyecto.rilcomar.repos.UsuarioRepository;
+import com.proyecto.rilcomar.repos.ClienteRepository;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -11,23 +12,33 @@ public class UsuarioService {
 
     @Autowired
     private UsuarioRepository usuarioRepository;
+    @Autowired
+    private ClienteRepository clienteRepository;
 
-    public Usuario autenticarUsuario(Usuario c) {
-        Usuario usuario = usuarioRepository.findById(c.getUsername()).orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+    public Usuario autenticarUsuario(Usuario usuario) {
+        Usuario usuarioEncontrado = usuarioRepository.findById(usuario.getUsername())
+                .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
 
-        if (usuario.getPassword().equals(c.getPassword())) {
-            return usuario;
+        if (usuarioEncontrado.getPassword().equals(usuario.getPassword())) {
+            return usuarioEncontrado;
         } else {
             throw new RuntimeException("Contraseña incorrecta");
         }
     }
 
 
-    public Usuario agregarUsuario(Usuario usuario) {
-        try{
-            if (usuarioRepository.existsById(usuario.getUsername()))
+    public Usuario agregarUsuario(Usuario usuario, Integer idCliente) {
+        try {
+            if (usuarioRepository.existsById(usuario.getUsername())) {
                 throw new RuntimeException("El nombre de usuario ya existe");
-            else return usuarioRepository.save(usuario);
+            }
+
+            if (!usuario.isEsAdmin() && idCliente != null) {
+                usuario.setCliente(clienteRepository.findById(idCliente)
+                        .orElseThrow(() -> new RuntimeException("Cliente no encontrado")));
+            }
+
+            return usuarioRepository.save(usuario);//no me interesa que al agregar el usuario devuelvatodo
         } catch (Exception e) {
             throw new RuntimeException("Error inesperado al guardar el usuario", e);
         }
