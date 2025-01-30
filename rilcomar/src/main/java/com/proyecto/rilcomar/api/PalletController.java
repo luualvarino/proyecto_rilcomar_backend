@@ -2,6 +2,7 @@ package com.proyecto.rilcomar.api;
 
 
 import com.proyecto.rilcomar.dtos.PalletDto;
+import com.proyecto.rilcomar.enums.EstadoPalletEnum;
 import com.proyecto.rilcomar.mappers.PalletMapper;
 import com.proyecto.rilcomar.services.PalletService;
 import org.springframework.http.HttpStatus;
@@ -10,7 +11,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping(value = "/pallets", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -59,4 +62,13 @@ public class PalletController {
     public void eliminarPallet(@PathVariable int id) {
         palletService.eliminarPallet(id);
     }
+
+    @GetMapping("/countByEstado")
+    public Map<String, Long> countPalletsByEstado() {
+        Map<String, Long> result = new HashMap<>();
+        result.put("Libre", palletService.countByEstado(EstadoPalletEnum.Libre));
+        result.put("Ocupado", palletService.countByEstado(EstadoPalletEnum.Ocupado));
+        return result;
+    }
+
 }

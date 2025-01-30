@@ -44,4 +44,8 @@ public class PalletService {
             throw new RuntimeException("Error inesperado al eliminar el pallet", e);
         }
     }
+
+    public Long countByEstado(EstadoPalletEnum estadoPalletEnum) {
+        return palletRepository.countByEstado(estadoPalletEnum);
+    }
 }
