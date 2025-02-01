@@ -8,6 +8,7 @@ import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -34,12 +35,34 @@ public class PalletService {
         return palletRepository.save(pallet);
     }
 
+    public List<Pallet> agregarPallets(Pallet pallet, int cantidad){
+        List<Pallet> palletsCreados = new ArrayList<>();
+
+        for (int i = 0; i < cantidad; i++) {
+            Pallet nuevoPallet = new Pallet();
+
+            nuevoPallet.setTipo(pallet.getTipo());
+            nuevoPallet.setPeso(pallet.getPeso());
+            nuevoPallet.setFormato(pallet.getFormato());
+            nuevoPallet.setObservaciones(pallet.getObservaciones());
+            nuevoPallet.setEstado(EstadoPalletEnum.Libre);
+
+            palletsCreados.add(palletRepository.save(nuevoPallet));
+        }
+
+        return palletsCreados;
+    }
+
     public void eliminarPallet(int id) {
         try {
-            if (palletRepository.existsById(id))
-                palletRepository.deleteById(id);
-            else
-                throw new EntityNotFoundException("Pallet " + id + " no encontrado");
+            Pallet pallet = palletRepository.findById(id)
+                    .orElseThrow(() -> new EntityNotFoundException("Pallet " + id + " no encontrado"));
+
+            if (pallet.getEstado() == EstadoPalletEnum.Ocupado) {
+                throw new IllegalStateException("No se puede eliminar un pallet con estado 'Ocupado'.");
+            }
+
+            palletRepository.deleteById(id);
         } catch (Exception e) {
             throw new RuntimeException("Error inesperado al eliminar el pallet", e);
         }

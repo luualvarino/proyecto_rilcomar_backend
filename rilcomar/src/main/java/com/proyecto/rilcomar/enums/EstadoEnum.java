@@ -5,5 +5,6 @@ public enum EstadoEnum {
     Procesando,
     En_Viaje,
     Entregado,
-    Completado
+    Completado,
+    Finalizado
 }

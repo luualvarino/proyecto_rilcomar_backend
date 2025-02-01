@@ -11,9 +11,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping(value = "/pallets", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -52,9 +54,24 @@ public class PalletController {
                 .orElse(ResponseEntity.notFound().build());
     }
 
-    @PostMapping
+    /*@PostMapping
     public PalletDto agregarPallet(@RequestBody PalletDto pallet) {
         return PalletMapper.buildDto(palletService.agregarPallet(PalletMapper.buildEntity(pallet)));
+    }*/
+
+    @PostMapping
+    public List<PalletDto> agregarPallet(@RequestBody PalletDto pallet, @RequestParam(required = false) Integer cantidad) {
+        if (cantidad == null || cantidad == 1) {
+            PalletDto palletEntity = PalletMapper.buildDto(palletService.agregarPallet(PalletMapper.buildEntity(pallet)));
+            return List.of(palletEntity);  // Retorna una lista con un solo pallet
+        } else if (cantidad > 1) {
+            List<PalletDto> pallets = palletService.agregarPallets(PalletMapper.buildEntity(pallet), cantidad)
+                    .stream()
+                    .map(PalletMapper::buildDto)
+                    .collect(Collectors.toList());
+            return pallets;
+        }
+        return Collections.emptyList();
     }
 
     @DeleteMapping("/{id}")

@@ -51,11 +51,8 @@ public class PedidoController {
 
     @GetMapping("/cliente")
     public List<PedidoDto> obtenerPedidosXCliente(@RequestParam(name = "clienteId") Integer clienteId, @RequestParam(required = false) String estado){
-
-
-        if (clienteId == null) {
-            throw new IllegalArgumentException("El clienteId es obligatorio.");
-        }
+        if(clienteId == null)
+            throw new IllegalArgumentException("El cliente es obligatorio");
 
         return pedidoService.obtenerPedidosXCliente(clienteId, estado)
                 .stream()

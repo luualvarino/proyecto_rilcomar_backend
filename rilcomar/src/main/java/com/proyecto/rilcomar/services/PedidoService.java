@@ -12,9 +12,11 @@ import com.proyecto.rilcomar.repos.PedidoRepository;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.stereotype.Service;
 
+import lombok.extern.slf4j.Slf4j;
 import java.util.Date;
 import java.util.List;
-
+import java.util.Objects;
+@Slf4j
 @Service
 public class PedidoService {
     private final PedidoRepository pedidoRepository;
@@ -27,6 +29,9 @@ public class PedidoService {
 
     public List<Pedido> obtenerPedidos(String estado) {
         EstadoEnum estadoEnum = estado != null ? EstadoEnum.valueOf(estado) : null;
+        if(estadoEnum != null && estadoEnum.equals(EstadoEnum.Finalizado)){
+            return pedidoRepository.findByEstadoNot(estadoEnum);
+        }
         return pedidoRepository.findAllByEstado(estadoEnum);
     }
 
@@ -53,23 +58,39 @@ public class PedidoService {
     }
 
     public Pedido editarPedido(Pedido pedido){
-        if(pedidoRepository.existsById(pedido.getId())){
-            if (pedido.getEstado() == null) {
-                throw new IllegalArgumentException("El estado no puede ser null");
-            }
-            pedido.setUltimaActualizacion(new Date());
-            return pedidoRepository.save(pedido);
-        }else{
-            throw new EntityNotFoundException("Pedido " + pedido.getId() + " no encontrado");
+        Pedido pedidoExistente =  pedidoRepository.findById(pedido.getId())
+                .orElseThrow(() -> new EntityNotFoundException("Pedido " + pedido.getId() + " no encontrado"));
+
+        if (pedidoExistente.getEstado() == EstadoEnum.Finalizado) {
+            throw new IllegalStateException("No se puede actualizar un pedido finalizado.");
         }
+
+        if (pedido.getEstado() == null) {
+            throw new IllegalArgumentException("El estado no puede ser null");
+        }
+        if(pedido.getEstado() == EstadoEnum.Finalizado){
+            for(Pallet pallet : pedido.getPalletsAux()){
+                Pallet palletExist = palletRepository.findById(pallet.getId()).orElse(null);
+                assert palletExist != null;
+                palletExist.setEstado(EstadoPalletEnum.Libre);
+                palletRepository.save(palletExist);
+            }
+        }
+
+        pedido.setUltimaActualizacion(new Date());
+        return pedidoRepository.save(pedido);
     }
 
     public void eliminarPedido(int id) {
         try {
-            if (pedidoRepository.existsById(id))
+            Pedido pedido = pedidoRepository.findById(id)
+                    .orElseThrow(() -> new EntityNotFoundException("Pedido " + id + " no encontrado"));
+
+            if (pedido.getEstado() == EstadoEnum.Creado || pedido.getEstado() == EstadoEnum.Finalizado) {
                 pedidoRepository.deleteById(id);
-            else
-                throw new EntityNotFoundException("Pedido " + id + " no encontrado");
+            }else
+                throw new IllegalStateException("No se puede eliminar un pedido con estado 'Creado' o 'Finalizado'.");
+
         } catch (Exception e) {
             throw new RuntimeException("Error inesperado al eliminar el pedido", e);
         }
