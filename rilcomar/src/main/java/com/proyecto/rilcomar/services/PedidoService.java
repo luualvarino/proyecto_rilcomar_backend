@@ -54,6 +54,9 @@ public class PedidoService {
 
     public Pedido editarPedido(Pedido pedido){
         if(pedidoRepository.existsById(pedido.getId())){
+            if (pedido.getEstado() == null) {
+                throw new IllegalArgumentException("El estado no puede ser null");
+            }
             pedido.setUltimaActualizacion(new Date());
             return pedidoRepository.save(pedido);
         }else{
@@ -69,6 +72,15 @@ public class PedidoService {
                 throw new EntityNotFoundException("Pedido " + id + " no encontrado");
         } catch (Exception e) {
             throw new RuntimeException("Error inesperado al eliminar el pedido", e);
+        }
+    }
+
+    public List<Pedido> obtenerPedidosXCliente(int clienteId, String estado) {
+        if ((estado == null || estado.isEmpty()))
+            return pedidoRepository.findAllByCliente(clienteId);
+        else {
+            EstadoEnum estadoEnum = EstadoEnum.valueOf(estado);
+            return pedidoRepository.findAllByClienteEstado(clienteId, estadoEnum);
         }
     }
 }

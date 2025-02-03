@@ -48,4 +48,18 @@ public class PedidoController {
     public void eliminarPedido(@PathVariable int id){
         pedidoService.eliminarPedido(id);
     }
+
+    @GetMapping("/cliente")
+    public List<PedidoDto> obtenerPedidosXCliente(@RequestParam(name = "clienteId") Integer clienteId, @RequestParam(required = false) String estado){
+
+
+        if (clienteId == null) {
+            throw new IllegalArgumentException("El clienteId es obligatorio.");
+        }
+
+        return pedidoService.obtenerPedidosXCliente(clienteId, estado)
+                .stream()
+                .map(PedidoMapper :: buildDto)
+                .toList();
+    }
 }
