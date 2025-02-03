@@ -2,7 +2,6 @@ package com.proyecto.rilcomar.api;
 
 import java.util.List;
 
-import com.proyecto.rilcomar.dtos.PalletDto;
 import com.proyecto.rilcomar.dtos.UsuarioDto;
 import com.proyecto.rilcomar.entities.Usuario;
 import com.proyecto.rilcomar.services.UsuarioService;
@@ -17,8 +16,9 @@ public class UsuarioController{
     @Autowired
     UsuarioService usuarioService;
     @PostMapping
-    public UsuarioDto agregarUsuario(@RequestBody UsuarioDto usuario){
-        return UsuarioDto.build(usuarioService.agregarUsuario(Usuario.build(usuario)));
+    public UsuarioDto agregarUsuario(@RequestBody UsuarioDto usuario) {
+        Integer idCliente = usuario.getCliente() != null ? usuario.getCliente().getId() : null;
+        return UsuarioDto.build(usuarioService.agregarUsuario(Usuario.build(usuario), idCliente));
     }
 
     @PostMapping("/login")
