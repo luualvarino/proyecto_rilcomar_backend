@@ -1,6 +1,7 @@
 package com.proyecto.rilcomar.api;
 
 import com.proyecto.rilcomar.dtos.PedidoDto;
+import com.proyecto.rilcomar.enums.EstadoEnum;
 import com.proyecto.rilcomar.mappers.PedidoMapper;
 import com.proyecto.rilcomar.services.PedidoService;
 import org.springframework.http.HttpStatus;
@@ -35,6 +36,8 @@ public class PedidoController {
 
     @PostMapping
     public PedidoDto agregarPedido(@RequestBody PedidoDto pedido){
+        System.out.println("📌 Pedido recibido: " + pedido.getEstado());
+        pedido.setEstado("Creado");
         return PedidoMapper.buildDto(pedidoService.agregarPedido(PedidoMapper.buildEntity(pedido)));
     }
 

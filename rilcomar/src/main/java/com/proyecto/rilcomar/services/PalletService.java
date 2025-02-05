@@ -16,6 +16,8 @@ import java.util.Optional;
 public class PalletService {
     @Autowired
     PalletRepository palletRepository;
+    @Autowired
+    QRCodeGeneratorService qrCodeGeneratorService;
 
     public List<Pallet> obtenerPallets(String estado, String tipo, String formato) {
         MaterialEnum materialEnum = tipo != null ? MaterialEnum.valueOf(tipo) : null;
@@ -32,7 +34,20 @@ public class PalletService {
 
     public Pallet agregarPallet(Pallet pallet){
         pallet.setEstado(EstadoPalletEnum.Libre);
-        return palletRepository.save(pallet);
+        pallet.setHistorial(new ArrayList<>());
+        pallet = palletRepository.save(pallet);
+
+        try {
+            String palletUrl = "http://rilcomar-bbhthdbxb3aud5hn.eastus2-01.azurewebsites.net/pallets/" + pallet.getId();
+            byte[] qrImage = qrCodeGeneratorService.generateQRCodeImage(palletUrl, 200, 200);
+            pallet.setQrCode(qrImage);
+            palletRepository.save(pallet);
+        } catch (Exception e) {
+            throw new RuntimeException("Error inesperado al agregar el pallet", e);
+            //e.printStackTrace();
+        }
+
+        return pallet;
     }
 
     public List<Pallet> agregarPallets(Pallet pallet, int cantidad){
@@ -46,10 +61,21 @@ public class PalletService {
             nuevoPallet.setFormato(pallet.getFormato());
             nuevoPallet.setObservaciones(pallet.getObservaciones());
             nuevoPallet.setEstado(EstadoPalletEnum.Libre);
+            nuevoPallet.setHistorial(new ArrayList<>());
 
-            palletsCreados.add(palletRepository.save(nuevoPallet));
+            nuevoPallet = palletRepository.save(nuevoPallet);
+
+            try {
+                String palletUrl = "http://rilcomar-bbhthdbxb3aud5hn.eastus2-01.azurewebsites.net/pallets/" + nuevoPallet.getId();
+                byte[] qrImage = qrCodeGeneratorService.generateQRCodeImage(palletUrl, 200, 200);
+                nuevoPallet.setQrCode(qrImage);
+                palletRepository.save(nuevoPallet);
+            } catch (Exception e) {
+                throw new RuntimeException("Error inesperado al agregar el pallet", e);
+            }
+
+            palletsCreados.add(nuevoPallet);
         }
-
         return palletsCreados;
     }
 

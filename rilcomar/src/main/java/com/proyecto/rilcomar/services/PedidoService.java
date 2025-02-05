@@ -8,23 +8,27 @@ import com.proyecto.rilcomar.enums.EstadoEnum;
 import com.proyecto.rilcomar.enums.EstadoPalletEnum;
 import com.proyecto.rilcomar.exceptions.NotFoundException;
 import com.proyecto.rilcomar.repos.PalletRepository;
+import com.proyecto.rilcomar.repos.PedidoPalletRepository;
 import com.proyecto.rilcomar.repos.PedidoRepository;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.stereotype.Service;
 
 import lombok.extern.slf4j.Slf4j;
-import java.util.Date;
-import java.util.List;
-import java.util.Objects;
+import jakarta.transaction.Transactional;
+
+import java.util.*;
+
 @Slf4j
 @Service
 public class PedidoService {
     private final PedidoRepository pedidoRepository;
     private final PalletRepository palletRepository;
+    private final PedidoPalletRepository pedidoPalletRepository;
 
-    public PedidoService(PedidoRepository pedidoRepository, PalletRepository palletRepository) {
+    public PedidoService(PedidoRepository pedidoRepository, PalletRepository palletRepository, PedidoPalletRepository pedidoPalletRepository) {
         this.pedidoRepository = pedidoRepository;
         this.palletRepository = palletRepository;
+        this.pedidoPalletRepository = pedidoPalletRepository;
     }
 
     public List<Pedido> obtenerPedidos(String estado) {
@@ -40,21 +44,41 @@ public class PedidoService {
                 .orElseThrow(() -> new NotFoundException("No se encontro un Pedido con el id " + id));
     }
 
+    @Transactional //las operaciones en la bd son atomicas, si ocurre un error se deshace lo previamente hecho
     public Pedido agregarPedido(Pedido pedido) {
-        pedido.setFechaCreacion(new Date());
-        pedido.setUltimaActualizacion(new Date());
-        pedido.setEstado(EstadoEnum.Creado);
-        pedido.setUbicacion("Deposito");
-        for (Pallet pallet : pedido.getPalletsAux()) {
-            Pallet palletExist = palletRepository.findById(pallet.getId()).orElse(null);
-            assert palletExist != null;
-            palletExist.setEstado(EstadoPalletEnum.Ocupado);
-            PedidoPalletId pedidoPalletId = new PedidoPalletId(pedido.getId(), palletExist.getId());
-            PedidoPallet pedidoPallet = new PedidoPallet(pedidoPalletId, pedido, palletExist);
-            pedido.getPallets().add(pedidoPallet);
-            palletRepository.save(palletExist);
+        try{
+            pedido.setFechaCreacion(new Date());
+            pedido.setUltimaActualizacion(new Date());
+            pedido.setUbicacion("Deposito");
+
+            pedido = pedidoRepository.save(pedido);
+
+            for (Pallet pallet : pedido.getPalletsAux()) {
+                Pallet palletExist = palletRepository.findById(pallet.getId()).orElse(null);
+                if(palletExist != null){
+                    palletExist.setEstado(EstadoPalletEnum.Ocupado);
+
+                    PedidoPalletId pedidoPalletId = new PedidoPalletId(pedido.getId(), palletExist.getId());
+                    PedidoPallet pedidoPallet = new PedidoPallet(pedidoPalletId, pedido, palletExist);
+
+                    pedidoPalletRepository.save(pedidoPallet); //necesario para poder manejar el mismo objeto en la misma sesion
+
+                    pedido = pedidoRepository.findById(pedido.getId()).orElseThrow(() -> new RuntimeException("Pedido no encontrado"));
+                    palletExist = palletRepository.findById(palletExist.getId()).orElseThrow(() -> new RuntimeException("Pallet no encontrado"));
+
+                    pedido.getPallets().add(pedidoPallet);
+                    palletExist.getHistorial().add(pedidoPallet);
+
+                    //palletRepository.save(palletExist);
+                }else{
+                    throw new RuntimeException("El pallet con ID " + pallet.getId() + " no existe.");
+                }
+            }
+
+            return pedido;
+        } catch (Exception e) {
+            throw new RuntimeException("Error inesperado al agregar el pedido", e);
         }
-        return pedidoRepository.save(pedido);
     }
 
     public Pedido editarPedido(Pedido pedido){

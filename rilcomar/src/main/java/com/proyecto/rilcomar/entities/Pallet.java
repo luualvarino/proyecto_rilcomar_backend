@@ -40,6 +40,13 @@ public class Pallet {
     @Column(name="ubicacion")
     private String ubicacion;
 
+    @Column(name="qr_code_url")
+    private String qrCodeUrl;
+
+    @Lob
+    @Column(name = "qr_code")
+    private byte[] qrCode;
+
     @OneToMany(mappedBy = "pallet", cascade = CascadeType.ALL)
     private List<PedidoPallet> historial;
 }

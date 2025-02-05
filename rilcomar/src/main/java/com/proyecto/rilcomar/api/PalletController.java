@@ -2,6 +2,7 @@ package com.proyecto.rilcomar.api;
 
 
 import com.proyecto.rilcomar.dtos.PalletDto;
+import com.proyecto.rilcomar.entities.Pallet;
 import com.proyecto.rilcomar.enums.EstadoPalletEnum;
 import com.proyecto.rilcomar.mappers.PalletMapper;
 import com.proyecto.rilcomar.services.PalletService;
@@ -11,10 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @RestController
@@ -50,7 +48,11 @@ public class PalletController {
     @GetMapping("/{id}")
     public ResponseEntity<PalletDto> obtenerPallet(@PathVariable int id) {
         return palletService.obtenerPallet(id)
-                .map(pallet -> ResponseEntity.ok(PalletMapper.buildDto(pallet)))
+                .map(pallet -> {
+                    PalletDto palletDto = PalletMapper.buildDto(pallet);
+                    palletDto.setQrCodeUrl(pallet.getQrCodeUrl());
+                    return ResponseEntity.ok(palletDto);
+                })
                 .orElse(ResponseEntity.notFound().build());
     }
 
@@ -86,6 +88,19 @@ public class PalletController {
         result.put("Libre", palletService.countByEstado(EstadoPalletEnum.Libre));
         result.put("Ocupado", palletService.countByEstado(EstadoPalletEnum.Ocupado));
         return result;
+    }
+
+    @GetMapping("/{id}/qrcode")
+    public ResponseEntity<byte[]> obtenerPalletQRCode(@PathVariable int id) {
+        Optional<Pallet> palletOptional = palletService.obtenerPallet(id);
+
+        if (palletOptional.isPresent() && palletOptional.get().getQrCode() != null) {
+            return ResponseEntity.ok()
+                    .contentType(MediaType.IMAGE_PNG)
+                    .body(palletOptional.get().getQrCode());
+        } else {
+            return ResponseEntity.notFound().build();
+        }
     }
 
 }
