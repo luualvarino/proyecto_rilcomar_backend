@@ -38,7 +38,7 @@ public class PalletService {
         pallet = palletRepository.save(pallet);
 
         try {
-            String palletUrl = "http://rilcomar-bbhthdbxb3aud5hn.eastus2-01.azurewebsites.net/pallets/" + pallet.getId();
+            String palletUrl = "http://localhost:3000/pallets/" + pallet.getId();
             byte[] qrImage = qrCodeGeneratorService.generateQRCodeImage(palletUrl, 200, 200);
             pallet.setQrCode(qrImage);
             palletRepository.save(pallet);
@@ -66,7 +66,7 @@ public class PalletService {
             nuevoPallet = palletRepository.save(nuevoPallet);
 
             try {
-                String palletUrl = "http://rilcomar-bbhthdbxb3aud5hn.eastus2-01.azurewebsites.net/pallets/" + nuevoPallet.getId();
+                String palletUrl = "http://localhost:3000/pallets/" + nuevoPallet.getId();
                 byte[] qrImage = qrCodeGeneratorService.generateQRCodeImage(palletUrl, 200, 200);
                 nuevoPallet.setQrCode(qrImage);
                 palletRepository.save(nuevoPallet);

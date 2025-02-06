@@ -55,21 +55,16 @@ public class PedidoService {
 
             for (Pallet pallet : pedido.getPalletsAux()) {
                 Pallet palletExist = palletRepository.findById(pallet.getId()).orElse(null);
+
                 if(palletExist != null){
                     palletExist.setEstado(EstadoPalletEnum.Ocupado);
 
                     PedidoPalletId pedidoPalletId = new PedidoPalletId(pedido.getId(), palletExist.getId());
                     PedidoPallet pedidoPallet = new PedidoPallet(pedidoPalletId, pedido, palletExist);
 
-                    pedidoPalletRepository.save(pedidoPallet); //necesario para poder manejar el mismo objeto en la misma sesion
+                    pedido.addPallet(pedidoPallet);
+                    palletExist.addHistorial(pedidoPallet);
 
-                    pedido = pedidoRepository.findById(pedido.getId()).orElseThrow(() -> new RuntimeException("Pedido no encontrado"));
-                    palletExist = palletRepository.findById(palletExist.getId()).orElseThrow(() -> new RuntimeException("Pallet no encontrado"));
-
-                    pedido.getPallets().add(pedidoPallet);
-                    palletExist.getHistorial().add(pedidoPallet);
-
-                    //palletRepository.save(palletExist);
                 }else{
                     throw new RuntimeException("El pallet con ID " + pallet.getId() + " no existe.");
                 }

@@ -16,6 +16,7 @@ spring:
     password: pallet-2025
     driver-class-name: com.microsoft.sqlserver.jdbc.SQLServerDriver
 
-
+server:
+  port: 8085
   servlet:
     context-path: /rilcomar

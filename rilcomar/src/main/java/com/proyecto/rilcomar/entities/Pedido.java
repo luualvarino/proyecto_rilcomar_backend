@@ -5,6 +5,7 @@ import com.proyecto.rilcomar.enums.EstadoEnum;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -48,8 +49,13 @@ public class Pedido {
     private String ubicacion;
 
     @OneToMany(mappedBy = "pedido", cascade = CascadeType.ALL)
-    private List<PedidoPallet> pallets;
+    private List<PedidoPallet> pallets = new ArrayList<>();
 
     @Transient
     private List<Pallet> palletsAux;
+
+    public void addPallet(PedidoPallet pedidoPallet) {
+        pallets.add(pedidoPallet);
+        pedidoPallet.setPedido(this);
+    }
 }
