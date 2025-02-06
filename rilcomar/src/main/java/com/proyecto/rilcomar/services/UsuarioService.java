@@ -38,7 +38,7 @@ public class UsuarioService {
                         .orElseThrow(() -> new RuntimeException("Cliente no encontrado")));
             }
 
-            return usuarioRepository.save(usuario);//no me interesa que al agregar el usuario devuelvatodo
+            return usuarioRepository.save(usuario);
         } catch (Exception e) {
             throw new RuntimeException("Error inesperado al guardar el usuario", e);
         }
@@ -57,4 +57,14 @@ public class UsuarioService {
             throw new RuntimeException("Error inesperado al guardar el usuario", e);
         }
     }
+
+
+    public List<Usuario> obtenerUsuariosPorCliente(int idCliente) {
+        List<Usuario> usuarios = usuarioRepository.findByClienteId(idCliente);
+        if (usuarios.isEmpty()) {
+            throw new RuntimeException("No se encontraron usuarios para el cliente.");
+        }
+        return usuarios;
+    }
+
 }
