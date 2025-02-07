@@ -60,11 +60,7 @@ public class UsuarioService {
 
 
     public List<Usuario> obtenerUsuariosPorCliente(int idCliente) {
-        List<Usuario> usuarios = usuarioRepository.findByClienteId(idCliente);
-        if (usuarios.isEmpty()) {
-            throw new RuntimeException("No se encontraron usuarios para el cliente.");
-        }
-        return usuarios;
+        return usuarioRepository.findByClienteId(idCliente);
     }
 
 }
