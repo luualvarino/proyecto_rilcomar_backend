@@ -12,9 +12,12 @@ spring:
 
   datasource:
     url: jdbc:sqlserver://localhost:1433;databaseName=RILCOMAR;trustServerCertificate=true;
-    username: rilcomar
-    password: pallet-2025
+    username: sa
+    password: Admin123
     driver-class-name: com.microsoft.sqlserver.jdbc.SQLServerDriver
+
+  qr:
+    url: http://localhost:3000/pallets/
 
 server:
   port: 8085
