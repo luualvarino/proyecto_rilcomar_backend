@@ -33,9 +33,21 @@ public class UsuarioController{
                 .toList();
     }
 
+    @GetMapping("/{idCliente}")//quizas no esta bueno mostrar el id del cliente
+    public List<UsuarioDto> obtenerUsuariosCliente(@PathVariable int idCliente) {
+        return usuarioService.obtenerUsuariosPorCliente(idCliente)
+                .stream()
+                .map(UsuarioDto::build)
+                .toList();
+
+    }
+
     @DeleteMapping("/{username}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void eliminarUsuario(@PathVariable String username){
         usuarioService.eliminarUsuario(username);
     }
+
+    //eliminar usuarios asociados a un cliente segun el id del cliente
+
 }
