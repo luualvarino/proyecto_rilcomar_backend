@@ -6,6 +6,7 @@ import com.proyecto.rilcomar.enums.MaterialEnum;
 import com.proyecto.rilcomar.repos.PalletRepository;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -19,6 +20,9 @@ public class PalletService {
     @Autowired
     QRCodeGeneratorService qrCodeGeneratorService;
 
+    @Value("qr.url")
+    private String qrUrl;
+
     public List<Pallet> obtenerPallets(String estado, String tipo, String formato) {
         MaterialEnum materialEnum = tipo != null ? MaterialEnum.valueOf(tipo) : null;
         EstadoPalletEnum estadoPalletEnum = estado != null ? EstadoPalletEnum.valueOf(estado) : null;
@@ -31,24 +35,6 @@ public class PalletService {
     }
 
     public Optional<Pallet> obtenerPallet(int id) { return palletRepository.findById(id); }
-
-    public Pallet agregarPallet(Pallet pallet){
-        pallet.setEstado(EstadoPalletEnum.Libre);
-        pallet.setHistorial(new ArrayList<>());
-        pallet = palletRepository.save(pallet);
-
-        try {
-            String palletUrl = "http://localhost:3000/pallets/" + pallet.getId();
-            byte[] qrImage = qrCodeGeneratorService.generateQRCodeImage(palletUrl, 200, 200);
-            pallet.setQrCode(qrImage);
-            palletRepository.save(pallet);
-        } catch (Exception e) {
-            throw new RuntimeException("Error inesperado al agregar el pallet", e);
-            //e.printStackTrace();
-        }
-
-        return pallet;
-    }
 
     public List<Pallet> agregarPallets(Pallet pallet, int cantidad){
         List<Pallet> palletsCreados = new ArrayList<>();
@@ -66,7 +52,7 @@ public class PalletService {
             nuevoPallet = palletRepository.save(nuevoPallet);
 
             try {
-                String palletUrl = "http://localhost:3000/pallets/" + nuevoPallet.getId();
+                String palletUrl = qrUrl + nuevoPallet.getId();
                 byte[] qrImage = qrCodeGeneratorService.generateQRCodeImage(palletUrl, 200, 200);
                 nuevoPallet.setQrCode(qrImage);
                 palletRepository.save(nuevoPallet);
