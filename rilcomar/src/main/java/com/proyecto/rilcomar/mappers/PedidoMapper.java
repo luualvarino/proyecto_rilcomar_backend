@@ -9,9 +9,11 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Optional;
 
 public class PedidoMapper {
-    static SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm");
+    static SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyy");
+    static SimpleDateFormat dateFormatUpdate = new SimpleDateFormat("dd/MM/yyyy HH:mm");
 
     public static PedidoDto buildDto(Pedido pedido) {
         return PedidoDto.builder()
@@ -20,7 +22,7 @@ public class PedidoMapper {
                 .cliente(ClienteMapper.buildDto(pedido.getCliente()))
                 .fechaCreacion(formatDate(pedido.getFechaCreacion()))
                 .fechaEntrega(formatDate(pedido.getFechaEntrega()))
-                .ultimaActualizacion(formatDate(pedido.getUltimaActualizacion()))
+                .ultimaActualizacion(formatDateUpdate(pedido.getUltimaActualizacion()))
                 .ubicacion(pedido.getUbicacion())
                 .pallets(
                         pedido.getPallets()
@@ -38,7 +40,7 @@ public class PedidoMapper {
                 .cliente(ClienteMapper.buildDto(pedido.getCliente()))
                 .fechaCreacion(formatDate(pedido.getFechaCreacion()))
                 .fechaEntrega(formatDate(pedido.getFechaEntrega()))
-                .ultimaActualizacion(formatDate(pedido.getUltimaActualizacion()))
+                .ultimaActualizacion(formatDateUpdate(pedido.getUltimaActualizacion()))
                 .ubicacion(pedido.getUbicacion())
                 .build();
     }
@@ -47,10 +49,12 @@ public class PedidoMapper {
         return Pedido.builder()
                 .id(pedido.getId())
                 .cliente(ClienteMapper.buildEntity(pedido.getCliente()))
-                .estado(EstadoEnum.valueOf(pedido.getEstado()))
+                .estado(Optional.ofNullable(pedido.getEstado())
+                    .map(EstadoEnum::valueOf)
+                    .orElse(null))
                 .fechaCreacion(parseDate(pedido.getFechaCreacion()))
                 .fechaEntrega(parseDate(pedido.getFechaEntrega()))
-                .ultimaActualizacion(parseDate(pedido.getUltimaActualizacion()))
+                .ultimaActualizacion(parseDateUpdate(pedido.getUltimaActualizacion()))
                 .ubicacion(pedido.getUbicacion())
                 .pallets(new ArrayList<>())
                 .palletsAux(
@@ -72,5 +76,17 @@ public class PedidoMapper {
 
     public static String formatDate(Date date) {
         return date != null ? dateFormat.format(date) : null;
+    }
+
+    public static Date parseDateUpdate(String dateString) {
+        try {
+            return dateString != null ? dateFormatUpdate.parse(dateString) : null;
+        } catch (ParseException e) {
+            return null;
+        }
+    }
+
+    public static String formatDateUpdate(Date date) {
+        return date != null ? dateFormatUpdate.format(date) : null;
     }
 }

@@ -56,38 +56,26 @@ public class PalletController {
                 .orElse(ResponseEntity.notFound().build());
     }
 
-    /*@PostMapping
-    public PalletDto agregarPallet(@RequestBody PalletDto pallet) {
-        return PalletMapper.buildDto(palletService.agregarPallet(PalletMapper.buildEntity(pallet)));
-    }*/
-
-    @PostMapping
-    public List<PalletDto> agregarPallet(@RequestBody PalletDto pallet, @RequestParam(required = false) Integer cantidad) {
-        if (cantidad == null || cantidad == 1) {
-            PalletDto palletEntity = PalletMapper.buildDto(palletService.agregarPallet(PalletMapper.buildEntity(pallet)));
-            return List.of(palletEntity);  // Retorna una lista con un solo pallet
-        } else if (cantidad > 1) {
-            List<PalletDto> pallets = palletService.agregarPallets(PalletMapper.buildEntity(pallet), cantidad)
-                    .stream()
-                    .map(PalletMapper::buildDto)
-                    .collect(Collectors.toList());
-            return pallets;
-        }
-        return Collections.emptyList();
-    }
-
-    @DeleteMapping("/{id}")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void eliminarPallet(@PathVariable int id) {
-        palletService.eliminarPallet(id);
-    }
-
     @GetMapping("/countByEstado")
     public Map<String, Long> countPalletsByEstado() {
         Map<String, Long> result = new HashMap<>();
         result.put("Libre", palletService.countByEstado(EstadoPalletEnum.Libre));
         result.put("Ocupado", palletService.countByEstado(EstadoPalletEnum.Ocupado));
         return result;
+    }
+
+    @PostMapping
+    public List<PalletDto> agregarPallet(@RequestBody PalletDto pallet, @RequestParam(required = false) Integer cantidad) {
+        return palletService.agregarPallets(PalletMapper.buildEntity(pallet), cantidad)
+                .stream()
+                .map(PalletMapper::buildDto)
+                .collect(Collectors.toList());
+    }
+
+    @DeleteMapping("/{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void eliminarPallet(@PathVariable int id) {
+        palletService.eliminarPallet(id);
     }
 
     @GetMapping("/{id}/qrcode")
@@ -102,5 +90,4 @@ public class PalletController {
             return ResponseEntity.notFound().build();
         }
     }
-
 }

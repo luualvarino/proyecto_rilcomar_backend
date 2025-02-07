@@ -47,6 +47,7 @@ public class PedidoService {
     @Transactional //las operaciones en la bd son atomicas, si ocurre un error se deshace lo previamente hecho
     public Pedido agregarPedido(Pedido pedido) {
         try{
+            pedido.setEstado(EstadoEnum.valueOf("Creado"));
             pedido.setFechaCreacion(new Date());
             pedido.setUltimaActualizacion(new Date());
             pedido.setUbicacion("Deposito");
