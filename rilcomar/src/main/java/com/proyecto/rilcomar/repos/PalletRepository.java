@@ -26,4 +26,7 @@ public interface PalletRepository extends JpaRepository<Pallet, Integer>, JpaSpe
             WHERE pp.pedido.id = :pedidoId
             """)
     List<Pallet> findAllByPedido(int pedidoId);
+
+    @Query("SELECT COUNT(p) FROM Pallet p WHERE p.estado = :estado")
+    long countByEstado(EstadoPalletEnum estado);
 }

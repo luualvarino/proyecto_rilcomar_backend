@@ -28,4 +28,11 @@ public interface PedidoRepository extends JpaRepository<Pedido, Integer> {
             WHERE p.cliente.id = :clienteId AND (:estado IS NULL OR p.estado = :estado)
             """)
     List<Pedido> findAllByClienteEstado(int clienteId, EstadoEnum estado);
+
+    @Query("""
+            SELECT p
+            FROM Pedido p
+            WHERE (:estado IS NULL OR p.estado <> :estado)
+            """)
+    List<Pedido> findByEstadoNot(EstadoEnum estado);
 }

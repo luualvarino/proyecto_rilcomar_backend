@@ -5,6 +5,7 @@ import com.proyecto.rilcomar.enums.MaterialEnum;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -40,6 +41,18 @@ public class Pallet {
     @Column(name="ubicacion")
     private String ubicacion;
 
+    @Column(name="qr_code_url")
+    private String qrCodeUrl;
+
+    @Lob
+    @Column(name = "qr_code")
+    private byte[] qrCode;
+
     @OneToMany(mappedBy = "pallet", cascade = CascadeType.ALL)
-    private List<PedidoPallet> historial;
+    private List<PedidoPallet> historial  = new ArrayList<>();
+
+    public void addHistorial(PedidoPallet pedidoPallet) {
+        historial.add(pedidoPallet);
+        pedidoPallet.setPallet(this);
+    }
 }

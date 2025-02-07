@@ -20,6 +20,8 @@ public class PalletMapper {
                 .peso(pallet.getPeso())
                 .observaciones(pallet.getObservaciones())
                 .ubicacion(pallet.getUbicacion())
+                .qrCodeUrl(pallet.getQrCodeUrl())
+                .qrCode(pallet.getQrCode())
                 .historial(Optional.ofNullable(pallet.getHistorial())
                         .orElse(new ArrayList<>())
                         .stream()
@@ -37,6 +39,7 @@ public class PalletMapper {
                 .peso(pallet.getPeso())
                 .observaciones(pallet.getObservaciones())
                 .ubicacion(pallet.getUbicacion())
+                .qrCodeUrl(pallet.getQrCodeUrl())
                 .build();
     }
 
@@ -49,6 +52,7 @@ public class PalletMapper {
                 .peso(pallet.getPeso())
                 .observaciones(pallet.getObservaciones())
                 .ubicacion(pallet.getUbicacion())
+                .qrCodeUrl(pallet.getQrCodeUrl())
                 .build();
     }
 
@@ -61,6 +65,7 @@ public class PalletMapper {
                 .peso(pallet.getPeso())
                 .observaciones(pallet.getObservaciones())
                 .ubicacion(pallet.getUbicacion())
+                .qrCodeUrl(pallet.getQrCodeUrl())
                 .build();
     }
 }

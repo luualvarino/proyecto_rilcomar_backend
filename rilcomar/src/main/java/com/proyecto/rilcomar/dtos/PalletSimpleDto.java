@@ -15,4 +15,5 @@ public class PalletSimpleDto {
     private double peso;
     private String observaciones;
     private String ubicacion;
+    private String qrCodeUrl;
 }

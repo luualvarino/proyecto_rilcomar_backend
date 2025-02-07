@@ -12,8 +12,8 @@ spring:
 
   datasource:
     url: jdbc:sqlserver://localhost:1433;databaseName=RILCOMAR;trustServerCertificate=true;
-    username: admin
-    password: admin
+    username: rilcomar
+    password: pallet-2025
     driver-class-name: com.microsoft.sqlserver.jdbc.SQLServerDriver
 
 server:

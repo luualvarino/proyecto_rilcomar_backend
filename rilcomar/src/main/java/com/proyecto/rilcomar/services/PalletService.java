@@ -8,6 +8,7 @@ import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -15,6 +16,8 @@ import java.util.Optional;
 public class PalletService {
     @Autowired
     PalletRepository palletRepository;
+    @Autowired
+    QRCodeGeneratorService qrCodeGeneratorService;
 
     public List<Pallet> obtenerPallets(String estado, String tipo, String formato) {
         MaterialEnum materialEnum = tipo != null ? MaterialEnum.valueOf(tipo) : null;
@@ -31,17 +34,67 @@ public class PalletService {
 
     public Pallet agregarPallet(Pallet pallet){
         pallet.setEstado(EstadoPalletEnum.Libre);
-        return palletRepository.save(pallet);
+        pallet.setHistorial(new ArrayList<>());
+        pallet = palletRepository.save(pallet);
+
+        try {
+            String palletUrl = "http://localhost:3000/pallets/" + pallet.getId();
+            byte[] qrImage = qrCodeGeneratorService.generateQRCodeImage(palletUrl, 200, 200);
+            pallet.setQrCode(qrImage);
+            palletRepository.save(pallet);
+        } catch (Exception e) {
+            throw new RuntimeException("Error inesperado al agregar el pallet", e);
+            //e.printStackTrace();
+        }
+
+        return pallet;
+    }
+
+    public List<Pallet> agregarPallets(Pallet pallet, int cantidad){
+        List<Pallet> palletsCreados = new ArrayList<>();
+
+        for (int i = 0; i < cantidad; i++) {
+            Pallet nuevoPallet = new Pallet();
+
+            nuevoPallet.setTipo(pallet.getTipo());
+            nuevoPallet.setPeso(pallet.getPeso());
+            nuevoPallet.setFormato(pallet.getFormato());
+            nuevoPallet.setObservaciones(pallet.getObservaciones());
+            nuevoPallet.setEstado(EstadoPalletEnum.Libre);
+            nuevoPallet.setHistorial(new ArrayList<>());
+
+            nuevoPallet = palletRepository.save(nuevoPallet);
+
+            try {
+                String palletUrl = "http://localhost:3000/pallets/" + nuevoPallet.getId();
+                byte[] qrImage = qrCodeGeneratorService.generateQRCodeImage(palletUrl, 200, 200);
+                nuevoPallet.setQrCode(qrImage);
+                palletRepository.save(nuevoPallet);
+            } catch (Exception e) {
+                throw new RuntimeException("Error inesperado al agregar el pallet", e);
+            }
+
+            palletsCreados.add(nuevoPallet);
+        }
+        return palletsCreados;
     }
 
     public void eliminarPallet(int id) {
         try {
-            if (palletRepository.existsById(id))
-                palletRepository.deleteById(id);
-            else
-                throw new EntityNotFoundException("Pallet " + id + " no encontrado");
+            Pallet pallet = palletRepository.findById(id)
+                    .orElseThrow(() -> new EntityNotFoundException("Pallet " + id + " no encontrado"));
+
+            if (pallet.getEstado() == EstadoPalletEnum.Ocupado) {
+                throw new IllegalStateException("No se puede eliminar un pallet con estado 'Ocupado'.");
+            }
+
+            palletRepository.deleteById(id);
         } catch (Exception e) {
             throw new RuntimeException("Error inesperado al eliminar el pallet", e);
         }
+    }
+
+    public Long countByEstado(EstadoPalletEnum estadoPalletEnum) {
+        return palletRepository.countByEstado(estadoPalletEnum);
     }
 }
