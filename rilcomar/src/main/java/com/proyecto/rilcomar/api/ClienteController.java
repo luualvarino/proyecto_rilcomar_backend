@@ -39,6 +39,12 @@ public class ClienteController {
         return ClienteMapper.buildDto(clienteService.agregarCliente(ClienteMapper.buildEntity(cliente)));
     }
 
+    @PutMapping("/{id}")
+    public ClienteDto editarCliente(@PathVariable int id, @RequestBody ClienteDto cliente){
+        cliente.setId(id);
+        return ClienteMapper.buildDto(clienteService.editarCliente(ClienteMapper.buildEntity(cliente)));
+    }
+
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void eliminarCliente(@PathVariable int id){
