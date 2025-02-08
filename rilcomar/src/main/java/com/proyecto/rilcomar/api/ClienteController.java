@@ -41,7 +41,6 @@ public class ClienteController {
 
     @PutMapping("/{id}")
     public ClienteDto editarCliente(@PathVariable int id, @RequestBody ClienteDto cliente){
-        cliente.setId(id);
         return ClienteMapper.buildDto(clienteService.editarCliente(ClienteMapper.buildEntity(cliente)));
     }
 
