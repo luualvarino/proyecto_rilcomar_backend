@@ -30,7 +30,7 @@ public class ClienteService {
             }
             List<Usuario> usuarios = usuarioRepository.findByClienteId(id);
             usuarioRepository.deleteAll(usuarios);
-
+            clienteRepository.deleteById(id);
         } catch (Exception e) {
             throw new RuntimeException("Error inesperado al eliminar el cliente", e);
         }
