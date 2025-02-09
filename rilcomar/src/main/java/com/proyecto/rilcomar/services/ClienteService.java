@@ -39,4 +39,12 @@ public class ClienteService {
     public List<Cliente> obtenerClientes() { return clienteRepository.findAll(); }
 
     public Optional<Cliente> obtenerCliente(int id) { return clienteRepository.findById(id); }
+
+    public Cliente editarCliente(Cliente cliente){
+        if(clienteRepository.existsById(cliente.getId())){
+            return clienteRepository.save(cliente);
+        }else{
+            throw new EntityNotFoundException("Cliente " + cliente.getId() + " no encontrado");
+        }
+    }
 }
