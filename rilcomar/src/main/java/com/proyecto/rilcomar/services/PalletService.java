@@ -20,6 +20,8 @@ public class PalletService {
     @Autowired
     QRCodeGeneratorService qrCodeGeneratorService;
 
+    @Value("qr.url")
+    private String qrUrl;
 
     public List<Pallet> obtenerPallets(String estado, String tipo, String formato) {
         MaterialEnum materialEnum = tipo != null ? MaterialEnum.valueOf(tipo) : null;
@@ -50,7 +52,7 @@ public class PalletService {
             nuevoPallet = palletRepository.save(nuevoPallet);
 
             try {
-                String palletUrl = "https://red-hill-05804ba0f.4.azurestaticapps.net/rilcomar/pallets/" + nuevoPallet.getId();
+                String palletUrl = "http://rilcomarv2-a6gjaxgyfsgdebey.eastus2-01.azurewebsites.net/rilcomar/pallets/" + nuevoPallet.getId();
 
                 nuevoPallet.setQrCodeUrl(palletUrl);
 
