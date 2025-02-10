@@ -52,7 +52,7 @@ public class PalletService {
             nuevoPallet = palletRepository.save(nuevoPallet);
 
             try {
-                String palletUrl = qrUrl + nuevoPallet.getId();
+                String palletUrl = "http://rilcomarv2-a6gjaxgyfsgdebey.eastus2-01.azurewebsites.net/rilcomar/pallets/" + nuevoPallet.getId();
                 byte[] qrImage = qrCodeGeneratorService.generateQRCodeImage(palletUrl, 200, 200);
                 nuevoPallet.setQrCode(qrImage);
                 palletRepository.save(nuevoPallet);
