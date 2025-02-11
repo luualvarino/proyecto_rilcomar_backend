@@ -52,7 +52,7 @@ public class PalletService {
             nuevoPallet = palletRepository.save(nuevoPallet);
 
             try {
-                String palletUrl = "https://red-hill-05804ba0f.4.azurestaticapps.net/rilcomar/pallets/" + nuevoPallet.getId();
+                String palletUrl = "https://red-hill-05804ba0f.4.azurestaticapps.net/pallets/" + nuevoPallet.getId();
 
                 nuevoPallet.setQrCodeUrl(palletUrl);
 
