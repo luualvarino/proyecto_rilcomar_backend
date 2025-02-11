@@ -8,7 +8,6 @@ import com.proyecto.rilcomar.enums.EstadoEnum;
 import com.proyecto.rilcomar.enums.EstadoPalletEnum;
 import com.proyecto.rilcomar.exceptions.NotFoundException;
 import com.proyecto.rilcomar.repos.PalletRepository;
-import com.proyecto.rilcomar.repos.PedidoPalletRepository;
 import com.proyecto.rilcomar.repos.PedidoRepository;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.stereotype.Service;
@@ -23,17 +22,15 @@ import java.util.*;
 public class PedidoService {
     private final PedidoRepository pedidoRepository;
     private final PalletRepository palletRepository;
-    private final PedidoPalletRepository pedidoPalletRepository;
 
-    public PedidoService(PedidoRepository pedidoRepository, PalletRepository palletRepository, PedidoPalletRepository pedidoPalletRepository) {
+    public PedidoService(PedidoRepository pedidoRepository, PalletRepository palletRepository) {
         this.pedidoRepository = pedidoRepository;
         this.palletRepository = palletRepository;
-        this.pedidoPalletRepository = pedidoPalletRepository;
     }
 
     public List<Pedido> obtenerPedidos(String estado) {
         EstadoEnum estadoEnum = estado != null ? EstadoEnum.valueOf(estado) : null;
-        if(estadoEnum != null && estadoEnum.equals(EstadoEnum.Finalizado)){
+        if (estadoEnum != null && estadoEnum.equals(EstadoEnum.Finalizado)) {
             return pedidoRepository.findByEstadoNot(estadoEnum);
         }
         return pedidoRepository.findAllByEstado(estadoEnum);
@@ -44,9 +41,9 @@ public class PedidoService {
                 .orElseThrow(() -> new NotFoundException("No se encontro un Pedido con el id " + id));
     }
 
-    @Transactional //las operaciones en la bd son atomicas, si ocurre un error se deshace lo previamente hecho
+    @Transactional
     public Pedido agregarPedido(Pedido pedido) {
-        try{
+        try {
             pedido.setEstado(EstadoEnum.valueOf("Creado"));
             pedido.setFechaCreacion(new Date());
             pedido.setUltimaActualizacion(new Date());
@@ -57,7 +54,7 @@ public class PedidoService {
             for (Pallet pallet : pedido.getPalletsAux()) {
                 Pallet palletExist = palletRepository.findById(pallet.getId()).orElse(null);
 
-                if(palletExist != null){
+                if (palletExist != null) {
                     palletExist.setEstado(EstadoPalletEnum.Ocupado);
 
                     PedidoPalletId pedidoPalletId = new PedidoPalletId(pedido.getId(), palletExist.getId());
@@ -66,7 +63,7 @@ public class PedidoService {
                     pedido.addPallet(pedidoPallet);
                     palletExist.addHistorial(pedidoPallet);
 
-                }else{
+                } else {
                     throw new RuntimeException("El pallet con ID " + pallet.getId() + " no existe.");
                 }
             }
@@ -77,8 +74,8 @@ public class PedidoService {
         }
     }
 
-    public Pedido editarPedido(Pedido pedido){
-        Pedido pedidoExistente =  pedidoRepository.findById(pedido.getId())
+    public Pedido editarPedido(Pedido pedido) {
+        Pedido pedidoExistente = pedidoRepository.findById(pedido.getId())
                 .orElseThrow(() -> new EntityNotFoundException("Pedido " + pedido.getId() + " no encontrado"));
 
         if (pedidoExistente.getEstado() == EstadoEnum.Finalizado) {
@@ -88,13 +85,15 @@ public class PedidoService {
         if (pedido.getEstado() == null) {
             throw new IllegalArgumentException("El estado no puede ser null");
         }
-        if(pedido.getEstado() == EstadoEnum.Finalizado){
-            for(Pallet pallet : pedido.getPalletsAux()){
-                Pallet palletExist = palletRepository.findById(pallet.getId()).orElse(null);
-                assert palletExist != null;
+
+        for (Pallet pallet : pedido.getPalletsAux()) {
+            Pallet palletExist = palletRepository.findById(pallet.getId()).orElse(null);
+            assert palletExist != null;
+            palletExist.setUbicacion(pedido.getUbicacion());
+            if (pedido.getEstado() == EstadoEnum.Finalizado) {
                 palletExist.setEstado(EstadoPalletEnum.Libre);
-                palletRepository.save(palletExist);
             }
+            palletRepository.save(palletExist);
         }
 
         pedido.setUltimaActualizacion(new Date());
@@ -108,7 +107,7 @@ public class PedidoService {
 
             if (pedido.getEstado() == EstadoEnum.Creado || pedido.getEstado() == EstadoEnum.Finalizado) {
                 pedidoRepository.deleteById(id);
-            }else
+            } else
                 throw new IllegalStateException("No se puede eliminar un pedido con estado 'Creado' o 'Finalizado'.");
 
         } catch (Exception e) {
